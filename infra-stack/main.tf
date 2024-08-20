@@ -17,13 +17,13 @@ provider "aws" {
   # bucket = "vaibhav-jain-online"
 #}
 
-data "data.aws_s3_bucket" "vaibhav_jain_online" {
+data "aws_s3_bucket" "vaibhav_jain_online" {
   bucket = "vaibhav-jain-online"
 }
 
 
-resource "data.aws_s3_bucket_public_access_block" "public_access" {
-  bucket = data.aws_s3_bucket.vaibhav-jain-online.id
+resource "daws_s3_bucket_public_access_block" "public_access" {
+  bucket = aws_s3_bucket.vaibhav-jain-online.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -33,7 +33,7 @@ resource "data.aws_s3_bucket_public_access_block" "public_access" {
 
 #bucket policy
 resource "data.aws_s3_bucket_policy" "bucket_policy" {
-  bucket = data.data.aws_s3_bucket.vaibhav-jain-online.id
+  bucket = data.aws_s3_bucket.vaibhav-jain-online.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -44,15 +44,15 @@ resource "data.aws_s3_bucket_policy" "bucket_policy" {
           AWS = aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn
         }
         Action    = "s3:GetObject"
-        Resource  = "${data.data.aws_s3_bucket.vaibhav-jain-online.arn}/*"
+        Resource  = "${data.aws_s3_bucket.vaibhav-jain-online.arn}/*"
       }
     ]
   })
 }
 
 #uploading content and point it to index html page
-resource "data.data.aws_s3_bucket_website_configuration" "website" {
-  bucket = data.data.aws_s3_bucket.vaibhav-jain-online.id
+resource "data.aws_s3_bucket_website_configuration" "website" {
+  bucket = data.aws_s3_bucket.vaibhav-jain-online.id
 
   index_document {
     suffix = "index.html"
