@@ -22,4 +22,4 @@ jobs:
 
     - name: Sync website content to S3
       run: |
-        aws s3 sync ./website s3://your-s3-bucket-name --delete
+        aws s3 sync ./website s3://vaibhav-jain-online --delete
