@@ -123,9 +123,9 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-  # viewer_certificate {
-   # cloudfront_default_certificate = true
- # }
+   viewer_certificate {
+    cloudfront_default_certificate = true
+  }
 }
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
