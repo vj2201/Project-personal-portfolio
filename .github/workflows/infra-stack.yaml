@@ -3,7 +3,7 @@ name: Deploy Infrastructure
 on:
   push:
     paths:
-      - 'infra-stack/**'  # Trigger when Terraform files are changed
+      - 'terraform/**'  # Trigger when Terraform files are changed
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
