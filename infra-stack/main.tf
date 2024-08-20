@@ -32,7 +32,7 @@ resource "data.aws_s3_bucket_public_access_block" "public_access" {
 }
 
 #bucket policy
-resource "data.data.aws_s3_bucket_policy" "bucket_policy" {
+resource "data.aws_s3_bucket_policy" "bucket_policy" {
   bucket = data.data.aws_s3_bucket.vaibhav-jain-online.id
 
   policy = jsonencode({
@@ -87,7 +87,7 @@ locals {
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
     domain_name = data.data.aws_s3_bucket.vaibhav-jain-online.bucket_regional_domain_name
-    origin_id   = "S3-${data.data.aws_s3_bucket.vaibhav-jain-online.id}"
+    origin_id   = "S3-${data.aws_s3_bucket.vaibhav-jain-online.id}"
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
@@ -101,7 +101,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${data.data.aws_s3_bucket.vaibhav-jain-online.id}"
+    target_origin_id = "S3-${data.aws_s3_bucket.vaibhav-jain-online.id}"
 
     forwarded_values {
       query_string = false
@@ -137,11 +137,11 @@ output "cloudfront_domain_name" {
 }
 
 output "s3_website_endpoint" {
-  value = data.data.aws_s3_bucket_website_configuration.website.website_endpoint
+  value = data.aws_s3_bucket_website_configuration.website.website_endpoint
 }
 
 output "s3_bucket_name" {
-  value = data.data.aws_s3_bucket.vaibhav-jain-online.id
+  value = data.aws_s3_bucket.vaibhav-jain-online.id
 }
 
 output "cloudfront_distribution_id" {
