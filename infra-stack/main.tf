@@ -13,17 +13,17 @@ provider "aws" {
 }
 
 #excluded bucket creation bit
-#resource "aws_s3_bucket" "vaibhav-jain-online" {
+#resource "data.aws_s3_bucket" "vaibhav-jain-online" {
   # bucket = "vaibhav-jain-online"
 #}
 
-data "aws_s3_bucket" "vaibhav_jain_online" {
+data "data.aws_s3_bucket" "vaibhav_jain_online" {
   bucket = "vaibhav-jain-online"
 }
 
 
-resource "aws_s3_bucket_public_access_block" "public_access" {
-  bucket = aws_s3_bucket.vaibhav-jain-online.id
+resource "data.aws_s3_bucket_public_access_block" "public_access" {
+  bucket = data.aws_s3_bucket.vaibhav-jain-online.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -32,8 +32,8 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
 }
 
 #bucket policy
-resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.vaibhav-jain-online.id
+resource "data.data.aws_s3_bucket_policy" "bucket_policy" {
+  bucket = data.data.aws_s3_bucket.vaibhav-jain-online.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -44,15 +44,15 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
           AWS = aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn
         }
         Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.vaibhav-jain-online.arn}/*"
+        Resource  = "${data.data.aws_s3_bucket.vaibhav-jain-online.arn}/*"
       }
     ]
   })
 }
 
 #uploading content and point it to index html page
-resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = aws_s3_bucket.vaibhav-jain-online.id
+resource "data.data.aws_s3_bucket_website_configuration" "website" {
+  bucket = data.data.aws_s3_bucket.vaibhav-jain-online.id
 
   index_document {
     suffix = "index.html"
@@ -66,7 +66,7 @@ resource "aws_s3_bucket_website_configuration" "website" {
 resource "aws_s3_object" "website_files" {
   for_each = fileset("D:/Users/vjain/static-website-terraform/static-website", "**/*")
 
-  bucket       = aws_s3_bucket.vaibhav-jain-online.bucket
+  bucket       = data.data.aws_s3_bucket.vaibhav-jain-online.bucket
   key          = each.value
   source       = "D:/Users/vjain/static-website-terraform/static-website/${each.value}"
   etag         = filemd5("D:/Users/vjain/static-website-terraform/static-website/${each.value}")
@@ -86,8 +86,8 @@ locals {
 #cloudfront declaration
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
-    domain_name = aws_s3_bucket.vaibhav-jain-online.bucket_regional_domain_name
-    origin_id   = "S3-${aws_s3_bucket.vaibhav-jain-online.id}"
+    domain_name = data.data.aws_s3_bucket.vaibhav-jain-online.bucket_regional_domain_name
+    origin_id   = "S3-${data.data.aws_s3_bucket.vaibhav-jain-online.id}"
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
@@ -101,7 +101,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.vaibhav-jain-online.id}"
+    target_origin_id = "S3-${data.data.aws_s3_bucket.vaibhav-jain-online.id}"
 
     forwarded_values {
       query_string = false
@@ -137,11 +137,11 @@ output "cloudfront_domain_name" {
 }
 
 output "s3_website_endpoint" {
-  value = aws_s3_bucket_website_configuration.website.website_endpoint
+  value = data.data.aws_s3_bucket_website_configuration.website.website_endpoint
 }
 
 output "s3_bucket_name" {
-  value = aws_s3_bucket.vaibhav-jain-online.id
+  value = data.data.aws_s3_bucket.vaibhav-jain-online.id
 }
 
 output "cloudfront_distribution_id" {
