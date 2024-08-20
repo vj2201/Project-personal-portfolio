@@ -12,9 +12,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_s3_bucket" "vaibhav-jain-online" {
+#excluded bucket creation bit
+#resource "aws_s3_bucket" "vaibhav-jain-online" {
+  # bucket = "vaibhav-jain-online"
+#}
+
+data "aws_s3_bucket" "vaibhav_jain_online" {
   bucket = "vaibhav-jain-online"
 }
+
 
 resource "aws_s3_bucket_public_access_block" "public_access" {
   bucket = aws_s3_bucket.vaibhav-jain-online.id
@@ -43,6 +49,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
     ]
   })
 }
+
 #uploading content and point it to index html page
 resource "aws_s3_bucket_website_configuration" "website" {
   bucket = aws_s3_bucket.vaibhav-jain-online.id
